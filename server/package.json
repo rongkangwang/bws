@@ -1,0 +1,22 @@
+{
+  "name": "fwoltpserver",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "connect-timeout": "^1.9.0",
+    "consul": "^0.34.0",
+    "express": "^4.16.3",
+    "file-system": "^2.2.2"
+  },
+  "devDependencies": {
+    "body-parser": "^1.18.3",
+    "compression": "^1.7.3",
+    "cors": "^2.8.4",
+    "lodash": "^4.17.10",
+    "request": "^2.87.0"
+  }
+}
