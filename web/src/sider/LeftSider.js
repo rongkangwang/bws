@@ -1,39 +1,46 @@
 import React from 'react'
-import {Layout, Menu, Button} from 'antd'
+import {Layout, Menu, Icon} from 'antd'
+import {NavLink} from "react-router-dom";
 import 'antd/dist/antd.css';
-const {SubMenu} = Menu;
 const {Sider} = Layout;
 
-const menus = [];
+import '../style/style.css';
 
 export default class LeftSider extends React.Component{
     constructor(props){
         super(props);
-        const config = props.config;
-        for(let i = 0; i < config.components.items.length; i++){
-            const component = config.components.items[i];
-            const submenus = [];
-            for(let j = 0; j < component.subcomponents.items.length; j++){
-                const subcomponent = component.subcomponents.items[j];
-                submenus.push(<Menu.Item onClick={() => this.setCurrentPage(i,j)} key={subcomponent.name.toLowerCase()}>
-                    {subcomponent.name}
-                </Menu.Item>);
-            }
-            menus.push(<SubMenu key={component.name.toLowerCase()} title={component.name}>
-                {submenus}
-            </SubMenu>);
+        this.state = {
+            collapsed: props.collapsed,
+        };
+        console.log(this.props);
+    }
+    componentWillReceiveProps(nextProps) {
+        if(nextProps.collapsed !== this.props.collapsed) {
+            this.setState({
+                collapsed: nextProps.collapsed,
+            });
         }
     }
-    setCurrentPage = (i, j) => {
-        this.props.resetIndex(i,j);
-    }
+    // onCollapse = (collapsed) => {
+    //     this.setState({ collapsed });
+    // }
     render(){
-        return (<Sider width={250}>
-            <Menu mode="inline"
-                  defaultSelectedKeys={['placements']}
-                  defaultOpenKeys={['ads']}
+        return (<Sider trigger={null} collapsible collapsed={this.state.collapsed} defaultCollapsed={true}>
+            <Menu theme="dark" mode="inline"
+                  defaultSelectedKeys="2"
                   style={{ height: '100%' }}>
-                {menus}
+                <Menu.Item key="2">
+                    <NavLink to="/main">
+                        <Icon type="warning" />
+                        <span>报警事件管理</span>
+                    </NavLink>
+                </Menu.Item>
+                <Menu.Item key="1">
+                    <NavLink to="/user">
+                        <Icon type="user" />
+                        <span>用户管理</span>
+                    </NavLink>
+                </Menu.Item>
             </Menu>
         </Sider>);
     }

@@ -6,8 +6,6 @@ const cors = require('cors');
 
 const route = require('./route');
 
-const sd = require("./ServiceDiscovery/sd")
-
 const PORT = 3001;
 const app = express();
 app.use(cors());
@@ -19,8 +17,8 @@ app.use(bodyParser.urlencoded({
 }));
 route(app);
 app.listen(PORT, function(){
-    if(process.env.npm_config_service_discovery) {
-        sd.serviceDiscovery();
-    }
+    // if(process.env.npm_config_service_discovery) {
+    //     sd.serviceDiscovery();
+    // }
     console.log("Server listening on "+PORT);
 });

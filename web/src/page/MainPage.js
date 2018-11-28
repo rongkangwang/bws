@@ -1,45 +1,43 @@
 import React from 'react'
-import {Layout} from 'antd'
+import {Layout,Icon} from 'antd'
+const {Header,Content} = Layout;
 import LeftSider from '../sider/LeftSider'
-import MainLayout from '../layout/MainLayout'
-const {Footer} = Layout;
 
-const config = require("../../components");
+import '../style/style.css'
+import {Redirect, Route, Switch} from "react-router-dom";
+import UserLayout from "../layout/UserLayout";
+import ReportLayout from "../layout/ReportLayout";
 
 class MainPage extends React.Component {
     constructor(props) {
-        const headers = JSON.parse(sessionStorage.getItem("headers"));
-        if(!headers||!headers.network_id||!headers.user_id){
-            location.pathname = "/";
-            return;
-        }
         super(props);
         this.state = {
-            index: [0, 0],
-            category: config.components.items[0],
-            page: config.components.items[0].subcomponents.items[0]
+            collapsed: true,
         }
     }
-
-    resetIndex = (i, j) => {
-        console.log("update page...");
+    toggle = () => {
         this.setState({
-            index: [i, j],
-            category: config.components.items[i],
-            page: config.components.items[i].subcomponents.items[j]
+            collapsed: !this.state.collapsed,
         });
     }
-
     render() {
-        const {category, page} = this.state;
         return (
             <Layout style={{minHeight: '100vh'}}>
-                <LeftSider config={config} resetIndex={this.resetIndex}/>
+                <Header style={{ background: '#fff', padding: 0 }}>
+                    <Icon
+                        className="trigger"
+                        type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
+                        onClick={this.toggle}
+                    />
+                </Header>
                 <Layout>
-                    <MainLayout category={category} page={page}/>
-                    <Footer style={{ textAlign: 'center' }}>
-                        FreeWheel ©2018 Created by UI
-                    </Footer>
+                    <LeftSider collapsed={this.state.collapsed}/>
+                            <Switch>
+                                <Route exact path='/' component={ReportLayout}/>
+                                <Route path='/main' component={ReportLayout}/>
+                                <Route path='/user' component={UserLayout}/>
+                                <Redirect to="/" />
+                            </Switch>
                 </Layout>
             </Layout>
         );

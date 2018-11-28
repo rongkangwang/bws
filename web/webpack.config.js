@@ -41,17 +41,17 @@ module.exports = {
   devServer: {
     //hot: true,
     inline: true,
-    host: '0.0.0.0',
+    host: '127.0.0.1',
     port: 8082,
     historyApiFallback: true,
       disableHostCheck: true,
-      proxy: {
-          '/api/*': {
-              target: 'http://127.0.0.1:3001',
-              changeOrigin: true,
-              secure: false,
-          }
-      }
+      // proxy: {
+      //     '/api/*': {
+      //         target: 'http://127.0.0.1:3001',
+      //         changeOrigin: true,
+      //         secure: false,
+      //     }
+      // }
   },
   plugins: [
     new webpack.NoEmitOnErrorsPlugin({

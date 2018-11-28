@@ -2,20 +2,17 @@ import React from "react"
 import ReactDom from "react-dom"
 import {Route, Switch, Redirect, BrowserRouter,withRouter, Link} from 'react-router-dom';
 import MainPage from "./page/MainPage"
-import HomePage from "./page/HomePage"
+import {LocaleProvider} from "antd"
+import zh_CN from "antd/lib/locale-provider/zh_CN"
 
 class App extends React.Component{
 	render(){
 		return (
 			<BrowserRouter>
-				<Switch>
-  					<Route exact path='/' component={HomePage}/>
-                    <Route path='/main' component={MainPage}/>
-  					<Redirect to="/" />
-				</Switch>
+				<MainPage/>
 			</BrowserRouter>
 		);
 	}
 }
-ReactDom.render(<App/>,document.getElementById("app"));
+ReactDom.render(<LocaleProvider locale={zh_CN}><App/></LocaleProvider>,document.getElementById("app"));
 
