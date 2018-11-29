@@ -11,7 +11,8 @@ import {
     Modal,
     Form,
     Popconfirm,
-    DatePicker
+    DatePicker,
+    AutoComplete
 } from 'antd'
 import axios from 'axios'
 
@@ -23,12 +24,14 @@ const { TextArea } = Input;
 import '../../style/style.css'
 import {SERVER} from "../../config/config";
 import moment from "moment";
+import lodash from "lodash";
 
 
 class RepairStatusLayout extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
+            origindatasource: [],
             datasource: [],
             loading: false,
             visible: false,
@@ -44,7 +47,7 @@ class RepairStatusLayout extends React.Component{
         this.setState({loading:true});
         axios.get( SERVER+'/repairs').then(res => {
             if(res.status === 200){
-                this.setState({datasource:res.data, loading:false});
+                this.setState({origindatasource: res.data,datasource:res.data, loading:false});
             } else {
                 this.setState({loading:false});
             }
@@ -142,6 +145,14 @@ class RepairStatusLayout extends React.Component{
             updaterepair: record
         });
     }
+    staffFilterOnChange = (value) => {
+        const {origindatasource} = this.state;
+        if(!value){
+            this.setState({datasource: origindatasource});
+        }else {
+            this.setState({datasource: lodash.filter(origindatasource, (o) => o.staff == value || o.staff.includes(value))});
+        }
+    }
     render() {
         const formItemLayout = {
             labelCol: {
@@ -174,6 +185,7 @@ class RepairStatusLayout extends React.Component{
             title: '维修人员',
             dataIndex: 'staff',
             key: 'staff',
+            filterDropdown: () => <div className="custom-filter-dropdown"><AutoComplete autoFocus={true} allowClear={true} onChange={this.staffFilterOnChange} dataSource={lodash.uniq(lodash.map(this.state.origindatasource,"staff"))}/></div>
         },{
             title: '用户',
             dataIndex: 'username',

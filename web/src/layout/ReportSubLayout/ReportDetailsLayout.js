@@ -11,7 +11,7 @@ import {
     Modal,
     Form,
     Popconfirm,
-    DatePicker
+    DatePicker, AutoComplete
 } from 'antd'
 import axios from 'axios'
 
@@ -23,12 +23,14 @@ const { TextArea } = Input;
 import '../../style/style.css'
 import {SERVER} from "../../config/config";
 import moment from "moment";
+import lodash from "lodash";
 
 
 class ReportDetailsLayout extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
+            origindatasource:[],
             datasource: [],
             loading: false,
             visible: false,
@@ -44,7 +46,7 @@ class ReportDetailsLayout extends React.Component{
         this.setState({loading:true});
         axios.get( SERVER+'/events').then(res => {
             if(res.status === 200){
-                this.setState({datasource:res.data, loading:false});
+                this.setState({origindatasource:res.data,datasource:res.data, loading:false});
             } else {
                 this.setState({loading:false});
             }
@@ -145,6 +147,14 @@ class ReportDetailsLayout extends React.Component{
             updateevent: record
         });
     }
+    detectorFilterOnChange = (value) => {
+        const {origindatasource} = this.state;
+        if(!value){
+            this.setState({datasource: origindatasource});
+        }else {
+            this.setState({datasource: lodash.filter(origindatasource, (o) => o.detector_type == value || o.detector_type.includes(value))});
+        }
+    }
     render() {
         const formItemLayout = {
             labelCol: {
@@ -165,6 +175,7 @@ class ReportDetailsLayout extends React.Component{
             title: '探测器类型',
             dataIndex: 'detector_type',
             key: 'detector_type',
+            filterDropdown: () => <div className="custom-filter-dropdown"><AutoComplete autoFocus={true} allowClear={true} onChange={this.detectorFilterOnChange} dataSource={lodash.uniq(lodash.map(this.state.origindatasource,"detector_type"))}/></div>
         }, {
             title: '防区位置',
             dataIndex: 'position',

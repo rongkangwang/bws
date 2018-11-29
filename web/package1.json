@@ -5,8 +5,8 @@
   "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack-dev-server --hot --port 8082 --open --config webpack.config.js",
-    "build": "webpack --config webpack.config.js"
+    "start": "webpack && electron .",
+    "packager": "webpack && electron-packager . myapp --platform=win32 --electron-version=3.0.10  --overwrite --asar --out=release-builds"
   },
   "keywords": [],
   "author": "Rongkang Wang",

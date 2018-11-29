@@ -11,7 +11,7 @@ import {
     Modal,
     Form,
     Popconfirm,
-    DatePicker
+    DatePicker, AutoComplete
 } from 'antd'
 import axios from 'axios'
 
@@ -23,12 +23,14 @@ const { TextArea } = Input;
 import '../../style/style.css'
 import {SERVER} from "../../config/config";
 import moment from "moment";
+import lodash from "lodash";
 
 
 class ReportDeviceLayout extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
+            origindatasource:[],
             datasource: [],
             loading: false,
             visible: false,
@@ -44,7 +46,7 @@ class ReportDeviceLayout extends React.Component{
         this.setState({loading:true});
         axios.get( SERVER+'/devices').then(res => {
             if(res.status === 200){
-                this.setState({datasource:res.data, loading:false});
+                this.setState({origindatasource:res.data,datasource:res.data, loading:false});
             } else {
                 this.setState({loading:false});
             }
@@ -142,6 +144,14 @@ class ReportDeviceLayout extends React.Component{
             updatedevice: record
         });
     }
+    statusFilterOnChange = (value) => {
+        const {origindatasource} = this.state;
+        if(!value){
+            this.setState({datasource: origindatasource});
+        }else {
+            this.setState({datasource: lodash.filter(origindatasource, (o) => o.status == value || o.status.includes(value))});
+        }
+    }
     render() {
         const formItemLayout = {
             labelCol: {
@@ -162,6 +172,7 @@ class ReportDeviceLayout extends React.Component{
             title: '故障概况',
             dataIndex: 'status',
             key: 'status',
+            filterDropdown: () => <div className="custom-filter-dropdown"><AutoComplete autoFocus={true} allowClear={true} onChange={this.statusFilterOnChange} dataSource={lodash.uniq(lodash.map(this.state.origindatasource,"status"))}/></div>
         }, {
             title: '处理办法',
             dataIndex: 'solution',
