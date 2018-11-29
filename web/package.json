@@ -3,10 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "private": true,
+  "main": "electron.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack-dev-server --hot --port 8082 --open --config webpack.config.js",
-    "build": "webpack --config webpack.config.js"
+    "build": "webpack --config webpack.config.js",
+    "electron": "electron .",
+    "packager": "electron-packager . bws --platform=darwin --electron-version=3.0.10  --overwrite --asar --out=release-builds"
   },
   "keywords": [],
   "author": "Rongkang Wang",
@@ -21,6 +23,8 @@
     "babel-preset-stage-0": "6.22.0",
     "css-loader": "1.0.0",
     "electron": "^3.0.10",
+    "electron-packager": "^12.2.0",
+    "mysql": "^2.16.0",
     "progress-bar-webpack-plugin": "^1.9.3",
     "style-loader": "0.21.0",
     "uglifyjs-webpack-plugin": "^0.4.6",

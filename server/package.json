@@ -4,7 +4,8 @@
   "description": "",
   "private": true,
   "scripts": {
-    "start": "node app.js"
+    "start": "forever start app.js",
+    "stop": "forever stop app.js"
   },
   "dependencies": {
     "body-parser": "^1.18.3",
@@ -18,6 +19,7 @@
   "devDependencies": {
     "compression": "^1.7.3",
     "cors": "^2.8.4",
+    "forever": "^0.15.3",
     "lodash": "^4.17.10",
     "request": "^2.87.0"
   }
