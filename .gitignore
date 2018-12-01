@@ -3,3 +3,4 @@ server/node_modules
 web/node_modules
 .idea
 .DS_Store
+web/release-builds

@@ -95,7 +95,7 @@ exports.updateUser = function(req, res) {
     }
 };
 exports.getEvents = function(req, res) {
-    connection.query("select * from event join user on user.id=event.user_id",function (error, results) {
+    connection.query("select * from event join user on user.id=event.user_id order by datetime desc",function (error, results) {
         if (error) {
             console.log(error);
             res.send(error);
@@ -143,7 +143,7 @@ exports.updateEvent = function(req, res) {
     });
 };
 exports.getDevices = function(req, res) {
-    connection.query("select * from deviceselfcheck join user on user.id=deviceselfcheck.user_id",function (error, results) {
+    connection.query("select * from deviceselfcheck join user on user.id=deviceselfcheck.user_id order by date desc",function (error, results) {
         if (error) {
             console.log(error);
             res.send(error);
@@ -191,7 +191,7 @@ exports.updateDevice = function(req, res) {
     });
 };
 exports.getRepairs = function(req, res) {
-    connection.query("select * from repair join user on user.id=repair.user_id",function (error, results) {
+    connection.query("select * from repair join user on user.id=repair.user_id order by date desc",function (error, results) {
         if (error) {
             console.log(error);
             res.send(error);
@@ -239,7 +239,7 @@ exports.updateRepair = function(req, res) {
     });
 };
 exports.getTests = function(req, res) {
-    connection.query("select * from test join user on user.id=test.user_id",function (error, results) {
+    connection.query("select * from test join user on user.id=test.user_id order by datetime desc",function (error, results) {
         if (error) {
             console.log(error);
             res.send(error);

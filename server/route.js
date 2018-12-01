@@ -1,5 +1,5 @@
 const Table = require('./Controller/Table')
-const PDF = require('./Controller/PDF')
+const PDF = require('./Controller/NewPDF')
 
 module.exports = function(app){
     app.get('/', function (req, res) {
