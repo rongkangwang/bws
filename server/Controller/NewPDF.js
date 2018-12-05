@@ -5,8 +5,8 @@ const mysql = require('mysql');
 const moment = require('moment')
 const connection = mysql.createConnection({
     host     : 'localhost',
-    user     : 'bsdb',
-    password : 'bsconnect',
+    user     : 'test',
+    password : 'test',
     database : 'bws'
 });
 connection.connect();

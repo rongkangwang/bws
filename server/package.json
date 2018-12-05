@@ -5,7 +5,8 @@
   "private": true,
   "scripts": {
     "start": "forever start app.js",
-    "stop": "forever stop app.js"
+    "stop": "forever stop app.js",
+    "stopall": "forever stopall"
   },
   "dependencies": {
     "body-parser": "^1.18.3",

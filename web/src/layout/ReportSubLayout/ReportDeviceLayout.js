@@ -149,7 +149,7 @@ class ReportDeviceLayout extends React.Component{
         if(!value){
             this.setState({datasource: origindatasource});
         }else {
-            this.setState({datasource: lodash.filter(origindatasource, (o) => o.status == value || o.status.includes(value))});
+            this.setState({datasource: lodash.filter(origindatasource, (o) => o.status == value)});
         }
     }
     render() {
