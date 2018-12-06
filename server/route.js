@@ -1,10 +1,15 @@
 const Table = require('./Controller/Table')
 const PDF = require('./Controller/NewPDF')
+const UserTypePDF = require('./Controller/UserTypePDF')
 
 module.exports = function(app){
     app.get('/', function (req, res) {
         res.send("Hello World");
     });
+
+    app.get('/usertypes', Table.getUserTypes);
+    app.put('/usertype', Table.addUserType);
+    app.delete('/usertype/:id', Table.removeUserType);
     app.get('/users', Table.getUsers);
     app.put('/user', Table.addUser);
     app.delete('/user/:id', Table.removeUser);
@@ -30,5 +35,6 @@ module.exports = function(app){
     app.delete('/test/:testid', Table.removeTest);
     app.post('/test/:testid', Table.updateTest);
     //app.get('/user/user_id', Table.getUser);
-    app.get('/pdf', PDF.generatepdf)
+    app.get('/pdf', PDF.generatepdf);
+    app.get('/usertypepdf', UserTypePDF.generatepdf)
 };

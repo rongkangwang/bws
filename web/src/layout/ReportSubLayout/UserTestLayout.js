@@ -11,7 +11,7 @@ import {
     Modal,
     Form,
     Popconfirm,
-    DatePicker
+    DatePicker, AutoComplete
 } from 'antd'
 import axios from 'axios'
 
@@ -23,12 +23,14 @@ const { TextArea } = Input;
 import '../../style/style.css'
 import {SERVER} from "../../config/config";
 import moment from "moment";
+import lodash from "lodash";
 
 
 class UserTestLayout extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
+            origindatasource:[],
             datasource: [],
             loading: false,
             visible: false,
@@ -44,7 +46,7 @@ class UserTestLayout extends React.Component{
         this.setState({loading:true});
         axios.get( SERVER+'/tests').then(res => {
             if(res.status === 200){
-                this.setState({datasource:res.data, loading:false});
+                this.setState({origindatasource:res.data,datasource:res.data, loading:false});
             } else {
                 this.setState({loading:false});
             }
@@ -145,6 +147,14 @@ class UserTestLayout extends React.Component{
             updatetest: record
         });
     }
+    userFilterOnChange = (value) => {
+        const {origindatasource} = this.state;
+        if(!value){
+            this.setState({datasource: origindatasource});
+        } else {
+            this.setState({datasource: lodash.filter(origindatasource, (o) => o.username == value || o.username.includes(value)||o.device_id==value||o.device_id.includes(value)||(o.username+"-"+o.device_id).includes(value))});
+        }
+    }
     render() {
         const formItemLayout = {
             labelCol: {
@@ -185,6 +195,7 @@ class UserTestLayout extends React.Component{
             title: '用户',
             dataIndex: 'username',
             key: 'username',
+            filterDropdown: () => <div className="custom-filter-dropdown"><AutoComplete  dropdownMatchSelectWidth={false} autoFocus={true} allowClear={true} onChange={this.userFilterOnChange} dataSource={lodash.uniq(lodash.map(this.state.origindatasource,function(o) { return o.username+"-"+o.device_id; }))}/></div>
         }, { title: '',
             dataIndex: '',
             key: 'action',
@@ -221,7 +232,7 @@ class UserTestLayout extends React.Component{
                             {getFieldDecorator('user_id', {
                                 rules: [{ required: true, message: '请选择用户!' }],
                             })(
-                                <Select placeholder="选择用户" style={{width:"90%"}}>
+                                <Select showSearch optionFilterProp="children" filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0} placeholder="选择用户" style={{width:"90%"}}>
                                     {options}
                                 </Select>
                             )}
@@ -250,36 +261,30 @@ class UserTestLayout extends React.Component{
                         </FormItem>
                         <FormItem {...formItemLayout} label="报警防区">
                             {getFieldDecorator('sector',{
-                                rules: [{ required: true, message: '请选择报警防区!' }],
+                                rules: [{ required: true, message: '请输入报警防区!' }],
                             })(
-                                <Select placeholder="选择报警防区" style={{width:"90%"}}>
-                                    <Option value="1">1</Option>
-                                    <Option value="2">2</Option>
-                                </Select>
+                                <Input placeholder="输入报警防区" style={{width:"90%"}}/>
                             )}
                         </FormItem>
                         <FormItem {...formItemLayout} label="防区位置">
                             {getFieldDecorator('position',{
-                                rules: [{ required: true, message: '请选择防区位置!' }],
+                                rules: [{ required: true, message: '请输入防区位置!' }],
                             })(
-                                <Select placeholder="选择防区位置" style={{width:"90%"}}>
-                                    <Option value="大厅">大厅</Option>
-                                    <Option value="正门门口">正门门口</Option>
-                                </Select>
+                                <Input placeholder="输入防区位置" style={{width:"90%"}}/>
                             )}
                         </FormItem>
                         <FormItem {...formItemLayout} label="报警次数">
                             {getFieldDecorator('report_num',{
                                 rules: [{ required: true, message: '请输入报警次数!' }],
                             })(
-                                <Input placeholder="输入报警次数"/>
+                                <Input placeholder="输入报警次数" style={{width:"90%"}}/>
                             )}
                         </FormItem>
                         <FormItem {...formItemLayout} label="用户电话">
                             {getFieldDecorator('phone_number',{
                                 rules: [{ required: true, message: '请输入用户电话!' }],
                             })(
-                                <Input placeholder="输入用户电话"/>
+                                <Input placeholder="输入用户电话" style={{width:"90%"}}/>
                             )}
                         </FormItem>
                     </Form>

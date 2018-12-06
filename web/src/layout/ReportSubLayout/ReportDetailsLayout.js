@@ -125,6 +125,7 @@ class ReportDetailsLayout extends React.Component{
     }
     removeEvent = (id) => {
         axios.delete( SERVER+'/event/'+id).then(res => {
+            console.log(id);
             if (res.status === 200) {
                 if(res.data.errno){
                     message.error(res.data.sqlMessage);
@@ -153,6 +154,14 @@ class ReportDetailsLayout extends React.Component{
             this.setState({datasource: origindatasource});
         }else {
             this.setState({datasource: lodash.filter(origindatasource, (o) => o.detector_type == value || o.detector_type.includes(value))});
+        }
+    }
+    userFilterOnChange = (value) => {
+        const {origindatasource} = this.state;
+        if(!value){
+            this.setState({datasource: origindatasource});
+        } else {
+            this.setState({datasource: lodash.filter(origindatasource, (o) => o.username == value || o.username.includes(value)||o.device_id==value||o.device_id.includes(value)||(o.username+"-"+o.device_id).includes(value))});
         }
     }
     render() {
@@ -188,6 +197,7 @@ class ReportDetailsLayout extends React.Component{
             title: '用户',
             dataIndex: 'username',
             key: 'username',
+            filterDropdown: () => <div className="custom-filter-dropdown"><AutoComplete  dropdownMatchSelectWidth={false} autoFocus={true} allowClear={true} onChange={this.userFilterOnChange} dataSource={lodash.uniq(lodash.map(this.state.origindatasource,function(o) { return o.username+"-"+o.device_id; }))}/></div>
         }, { title: '',
             dataIndex: '',
             key: 'action',
@@ -224,7 +234,7 @@ class ReportDetailsLayout extends React.Component{
                             {getFieldDecorator('user_id', {
                                 rules: [{ required: true, message: '请选择用户!' }],
                             })(
-                                <Select placeholder="选择用户" style={{width:"90%"}}>
+                                <Select showSearch optionFilterProp="children" filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0} placeholder="选择用户" style={{width:"90%"}}>
                                     {options}
                                 </Select>
                             )}
@@ -246,19 +256,18 @@ class ReportDetailsLayout extends React.Component{
                                 rules: [{ required: true, message: '请选择探测器类型!' }],
                             })(
                                 <Select  placeholder="选择探测器类型" style={{width:"90%"}}>
-                                    <Option value="单鉴">单鉴</Option>
+                                    <Option value="紧急按钮">紧急按钮</Option>
                                     <Option value="双鉴">双鉴</Option>
+                                    <Option value="震动">震动</Option>
+                                    <Option value="玻璃破碎">玻璃破碎</Option>
                                 </Select>
                             )}
                         </FormItem>
                         <FormItem {...formItemLayout} label="防区位置">
                             {getFieldDecorator('position',{
-                                rules: [{ required: true, message: '请选择防区位置!' }],
+                                rules: [{ required: true, message: '请输入防区位置!' }],
                             })(
-                                <Select placeholder="选择防区位置" style={{width:"90%"}}>
-                                    <Option value="大厅">大厅</Option>
-                                    <Option value="正门门口">正门门口</Option>
-                                </Select>
+                                <Input placeholder="输入防区位置" style={{width:"90%"}}/>
                             )}
                         </FormItem>
                         <FormItem {...formItemLayout} label="处理办法">

@@ -149,7 +149,15 @@ class ReportDeviceLayout extends React.Component{
         if(!value){
             this.setState({datasource: origindatasource});
         }else {
-            this.setState({datasource: lodash.filter(origindatasource, (o) => o.status == value)});
+            this.setState({datasource: lodash.filter(origindatasource, (o) => o.status == value||o.status.includes(value))});
+        }
+    }
+    userFilterOnChange = (value) => {
+        const {origindatasource} = this.state;
+        if(!value){
+            this.setState({datasource: origindatasource});
+        } else {
+            this.setState({datasource: lodash.filter(origindatasource, (o) => o.username == value || o.username.includes(value)||o.device_id==value||o.device_id.includes(value)||(o.username+"-"+o.device_id).includes(value))});
         }
     }
     render() {
@@ -181,6 +189,7 @@ class ReportDeviceLayout extends React.Component{
             title: '用户',
             dataIndex: 'username',
             key: 'username',
+            filterDropdown: () => <div className="custom-filter-dropdown"><AutoComplete  dropdownMatchSelectWidth={false} autoFocus={true} allowClear={true} onChange={this.userFilterOnChange} dataSource={lodash.uniq(lodash.map(this.state.origindatasource,function(o) { return o.username+"-"+o.device_id; }))}/></div>
         }, { title: '',
             dataIndex: '',
             key: 'action',
@@ -217,7 +226,7 @@ class ReportDeviceLayout extends React.Component{
                             {getFieldDecorator('user_id', {
                                 rules: [{ required: true, message: '请选择用户!' }],
                             })(
-                                <Select placeholder="选择用户" style={{width:"90%"}}>
+                                <Select showSearch optionFilterProp="children" filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0} placeholder="选择用户" style={{width:"90%"}}>
                                     {options}
                                 </Select>
                             )}
@@ -235,12 +244,9 @@ class ReportDeviceLayout extends React.Component{
                         </FormItem>
                         <FormItem {...formItemLayout} label="故障概况">
                             {getFieldDecorator('status',{
-                                rules: [{ required: true, message: '请选择故障概况!' }],
+                                rules: [{ required: true, message: '请输入故障概况!' }],
                             })(
-                                <Select  placeholder="选择故障概况" style={{width:"90%"}}>
-                                    <Option value="自检">自检</Option>
-                                    <Option value="无自检">无自检</Option>
-                                </Select>
+                                <Input placeholder="输入故障概况" style={{width:"90%"}}/>
                             )}
                         </FormItem>
                         <FormItem {...formItemLayout} label="处理办法">

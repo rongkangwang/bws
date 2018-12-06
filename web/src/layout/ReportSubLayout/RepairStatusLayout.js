@@ -153,6 +153,14 @@ class RepairStatusLayout extends React.Component{
             this.setState({datasource: lodash.filter(origindatasource, (o) => o.staff == value || o.staff.includes(value))});
         }
     }
+    userFilterOnChange = (value) => {
+        const {origindatasource} = this.state;
+        if(!value){
+            this.setState({datasource: origindatasource});
+        } else {
+            this.setState({datasource: lodash.filter(origindatasource, (o) => o.username == value || o.username.includes(value)||o.device_id==value||o.device_id.includes(value)||(o.username+"-"+o.device_id).includes(value))});
+        }
+    }
     render() {
         const formItemLayout = {
             labelCol: {
@@ -190,6 +198,7 @@ class RepairStatusLayout extends React.Component{
             title: '用户',
             dataIndex: 'username',
             key: 'username',
+            filterDropdown: () => <div className="custom-filter-dropdown"><AutoComplete  dropdownMatchSelectWidth={false} autoFocus={true} allowClear={true} onChange={this.userFilterOnChange} dataSource={lodash.uniq(lodash.map(this.state.origindatasource,function(o) { return o.username+"-"+o.device_id; }))}/></div>
         }, { title: '',
             dataIndex: '',
             key: 'action',
@@ -226,7 +235,7 @@ class RepairStatusLayout extends React.Component{
                             {getFieldDecorator('user_id', {
                                 rules: [{ required: true, message: '请选择用户!' }],
                             })(
-                                <Select placeholder="选择用户" style={{width:"90%"}}>
+                                <Select showSearch optionFilterProp="children" filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0} placeholder="选择用户" style={{width:"90%"}}>
                                     {options}
                                 </Select>
                             )}
@@ -244,42 +253,30 @@ class RepairStatusLayout extends React.Component{
                         </FormItem>
                         <FormItem {...formItemLayout} label="故障现象">
                             {getFieldDecorator('status',{
-                                rules: [{ required: true, message: '请选择故障现象!' }],
+                                rules: [{ required: true, message: '请输入故障现象!' }],
                             })(
-                                <Select  placeholder="选择故障现象" style={{width:"90%"}}>
-                                    <Option value="柜台按钮误报">柜台按钮误报</Option>
-                                    <Option value="其他">其他</Option>
-                                </Select>
+                                <Input placeholder="输入故障现象" style={{width:"90%"}}/>
                             )}
                         </FormItem>
                         <FormItem {...formItemLayout} label="维修内容">
                             {getFieldDecorator('content',{
                                 rules: [{ required: true, message: '请选择维修内容!' }],
                             })(
-                                <Select  placeholder="选择维修内容" style={{width:"90%"}}>
-                                    <Option value="更换线路">更换线路</Option>
-                                    <Option value="其他">其他</Option>
-                                </Select>
+                                <Input placeholder="输入维修内容" style={{width:"90%"}}/>
                             )}
                         </FormItem>
                         <FormItem {...formItemLayout} label="维修器材">
                             {getFieldDecorator('material',{
-                                rules: [{ required: true, message: '请选择维修器材!' }],
+                                rules: [{ required: true, message: '请输入维修器材!' }],
                             })(
-                                <Select  placeholder="选择维修器材" style={{width:"90%"}}>
-                                    <Option value="4*0.3线缆30m">更换线路</Option>
-                                    <Option value="其他">其他</Option>
-                                </Select>
+                                <Input placeholder="输入维修器材" style={{width:"90%"}}/>
                             )}
                         </FormItem>
                         <FormItem {...formItemLayout} label="维修人员">
                             {getFieldDecorator('staff',{
-                                rules: [{ required: true, message: '请选择维修人员!' }],
+                                rules: [{ required: true, message: '请输入维修人员!' }],
                             })(
-                                <Select  placeholder="选择维修人员" style={{width:"90%"}}>
-                                    <Option value="李冉">李冉</Option>
-                                    <Option value="其他">其他</Option>
-                                </Select>
+                                <Input placeholder="输入维修人员" style={{width:"90%"}}/>
                             )}
                         </FormItem>
                     </Form>

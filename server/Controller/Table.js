@@ -5,11 +5,46 @@ const fs = require('fs')
 const mysql = require('mysql');
 const connection = mysql.createConnection({
     host     : 'localhost',
-    user     : 'test',
-    password : 'test',
+    user     : 'root',
+    password : 'root',
     database : 'bws'
 });
 connection.connect();
+exports.getUserTypes = function(req, res) {
+    connection.query("select * from usertype",function (error, results) {
+        if (error) {
+            console.log(error);
+            res.send(error);
+        } else {
+            console.log(results);
+            res.send(results);
+        }
+    });
+};
+exports.addUserType = function(req, res) {
+    const usertype = req.body;
+    connection.query('INSERT INTO usertype SET ?',usertype,function (error, results) {
+        if (error) {
+            console.log(error);
+            res.send(error);
+        } else {
+            console.log(results);
+            res.send(results);
+        }
+    });
+};
+exports.removeUserType = function(req, res) {
+    const {id} = req.params;
+    connection.query('DELETE FROM usertype WHERE id = '+id,function (error, results) {
+        if (error) {
+            console.log(error);
+            res.send(error);
+        } else {
+            console.log(results);
+            res.send(results);
+        }
+    });
+};
 exports.getUsers = function(req, res) {
     connection.query("select * from user",function (error, results) {
         if (error) {
@@ -95,7 +130,7 @@ exports.updateUser = function(req, res) {
     }
 };
 exports.getEvents = function(req, res) {
-    connection.query("select * from event join user on user.id=event.user_id order by datetime desc",function (error, results) {
+    connection.query("select event.*, user.username, user.device_id from event join user on user.id=event.user_id order by datetime desc",function (error, results) {
         if (error) {
             console.log(error);
             res.send(error);
@@ -118,9 +153,12 @@ exports.addEvent = function(req, res) {
     });
 };
 exports.removeEvent = function(req, res) {
+    console.log("wang");
     const {eventid} = req.params;
-    connection.query('DELETE FROM event WHERE id = "'+eventid+'"', function (error, results, fields) {
+    console.log(eventid);
+    connection.query('DELETE FROM event WHERE id = '+eventid, function (error, results, fields) {
         if (error) {
+            console.log("error");
             console.log(error);
             res.send(error);
         } else {
@@ -143,7 +181,7 @@ exports.updateEvent = function(req, res) {
     });
 };
 exports.getDevices = function(req, res) {
-    connection.query("select * from deviceselfcheck join user on user.id=deviceselfcheck.user_id order by date desc",function (error, results) {
+    connection.query("select deviceselfcheck.*, user.username, user.device_id from deviceselfcheck join user on user.id=deviceselfcheck.user_id order by date desc",function (error, results) {
         if (error) {
             console.log(error);
             res.send(error);
@@ -191,7 +229,7 @@ exports.updateDevice = function(req, res) {
     });
 };
 exports.getRepairs = function(req, res) {
-    connection.query("select * from repair join user on user.id=repair.user_id order by date desc",function (error, results) {
+    connection.query("select repair.*, user.username, user.device_id from repair join user on user.id=repair.user_id order by date desc",function (error, results) {
         if (error) {
             console.log(error);
             res.send(error);
@@ -239,7 +277,7 @@ exports.updateRepair = function(req, res) {
     });
 };
 exports.getTests = function(req, res) {
-    connection.query("select * from test join user on user.id=test.user_id order by datetime desc",function (error, results) {
+    connection.query("select test.*, user.username, user.device_id from test join user on user.id=test.user_id order by datetime desc",function (error, results) {
         if (error) {
             console.log(error);
             res.send(error);
