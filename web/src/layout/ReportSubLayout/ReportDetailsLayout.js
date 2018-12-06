@@ -218,7 +218,7 @@ class ReportDetailsLayout extends React.Component{
         return (
             <Layout>
                 <Content style={{background: '#fff', minHeight: 280}}>
-                    <Button style={{marginBottom:'5px'}} onClick={this.showModal}><Icon type="sound"/>添加报警事件</Button>
+                    <Button style={{marginBottom:'5px'}} onClick={this.showModal}>添加报警事件</Button>
                     <Table size="small" columns={columns} loading={this.state.loading} dataSource={this.state.datasource}/>
                 </Content>
                 <Modal

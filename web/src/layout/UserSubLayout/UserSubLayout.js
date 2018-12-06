@@ -199,6 +199,16 @@ class UserSubLayout extends React.Component{
         }
     }
     render() {
+        const formItemLayout = {
+            labelCol: {
+                xs: { span: 24 },
+                sm: { span: 5 },
+            },
+            wrapperCol: {
+                xs: { span: 24 },
+                sm: { span: 19 },
+            },
+        };
         const columns = [{
             title: '用户',
             dataIndex: 'username',
@@ -235,7 +245,7 @@ class UserSubLayout extends React.Component{
         return (
             <Layout>
                 <Content style={{ background: '#fff', minHeight: 280}}>
-                    <Button style={{marginBottom:'5px'}} onClick={this.showModal}><Icon type="user-add"/>添加用户</Button>&nbsp;<Button style={{marginBottom:'5px'}} onClick={this.showUserTypeModal} >管理用户类型</Button>
+                    <Button style={{marginBottom:'5px'}} onClick={this.showModal}><Icon type="user-add"/>添加用户</Button>&nbsp;<Button style={{marginBottom:'5px'}} onClick={this.showUserTypeModal} ><Icon type="setting"/>管理用户类型</Button>
                     <Table size="small" columns={columns} loading={this.state.loading} dataSource={this.state.datasource}/>
                 </Content>
                 <Modal
@@ -243,52 +253,53 @@ class UserSubLayout extends React.Component{
                     visible={this.state.visible}
                     onOk={this.handleOk}
                     onCancel={this.handleCancel}
-                    width={300}
                     cancelText="取消"
                     okText="确定"
                 >
                     <Form>
-                        <FormItem>
-                            {getFieldDecorator('usertype_id')(
-                                <Select showSearch optionFilterProp="children" filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0} placeholder="选择用户类型">
+                        <FormItem {...formItemLayout} label="用户类型">
+                            {getFieldDecorator('usertype_id',{
+                                rules: [{ required: true, message: '请选择用户类型!' }],
+                            })(
+                                <Select style={{width:"90%"}} showSearch optionFilterProp="children" filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0} placeholder="选择用户类型">
                                     {options}
                                 </Select>
                             )}
                         </FormItem>
-                        <FormItem>
+                        <FormItem {...formItemLayout} label="用户">
                             {getFieldDecorator('username',{
                                 rules: [{ required: true, message: '请输入用户!' }],
                             })(
-                                <Input placeholder="用户"/>
+                                <Input placeholder="用户" style={{width:"90%"}}/>
                             )}
                         </FormItem>
-                        <FormItem>
+                        <FormItem {...formItemLayout} label="地址">
                             {getFieldDecorator('address')(
-                                <Input placeholder="地址"/>
+                                <Input placeholder="地址" style={{width:"90%"}}/>
                             )}
                         </FormItem>
-                        <FormItem>
+                        <FormItem {...formItemLayout} label="设备号">
                             {getFieldDecorator('device_id',{
                                 rules: [{ required: true, message: '请输入设备号!' }],
                             })(
-                                <Input placeholder="设备号"/>
+                                <Input placeholder="设备号" style={{width:"90%"}}/>
                             )}
                         </FormItem>
-                        <FormItem>
+                        <FormItem {...formItemLayout} label="设备电话">
                             {getFieldDecorator('device_phone')(
-                                <Input placeholder="设备电话"/>
+                                <Input placeholder="设备电话" style={{width:"90%"}}/>
                             )}
                         </FormItem>
                     </Form>
                 </Modal>
                 <Modal
-                    title={"添加用户类型"}
+                    title={"添加/删除用户类型"}
                     onCancel={this.handleUserTypeCancel}
                     visible={this.state.usertypevisible}
                     footer={null}
                 >
-                    <Row style={{margin:"5px"}} gutter={16}><Col span={18}><Input placeholder="请输入用户类型" onChange={this.setInsertUserType}/></Col><Col span={6}><Button type="primary" onClick={this.addUserType}>添加用户类型</Button></Col></Row>
-                    <Row style={{margin:"5px"}} gutter={16}>
+                    <Row style={{marginTop:"10px"}} gutter={8}><Col span={18}><Input placeholder="请输入用户类型" onChange={this.setInsertUserType}/></Col><Col span={6}><Button type="primary" onClick={this.addUserType}>添加用户类型</Button></Col></Row>
+                    <Row style={{marginTop:"10px"}} gutter={8}>
                     <Col span={18}><Select onChange={this.setRemoveUserType} style={{width:"100%"}} showSearch optionFilterProp="children" filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0} placeholder="选择用户类型">
                         {options}
                     </Select></Col><Col span={6}><Button onClick={this.deleteUserType} type="danger">删除用户类型</Button></Col>
