@@ -260,6 +260,8 @@ class ReportDetailsLayout extends React.Component{
                                     <Option value="双鉴">双鉴</Option>
                                     <Option value="震动">震动</Option>
                                     <Option value="玻璃破碎">玻璃破碎</Option>
+                                    <Option value="门磁">门磁</Option>
+                                    <Option value="其他">其他</Option>
                                 </Select>
                             )}
                         </FormItem>
