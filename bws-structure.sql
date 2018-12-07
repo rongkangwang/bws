@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.5.3.1
--- http://www.phpmyadmin.net
+-- version 4.6.6
+-- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: 2018-12-06 10:44:59
--- 服务器版本： 10.1.19-MariaDB
--- PHP Version: 5.6.28
+-- Generation Time: 2018-12-07 03:49:11
+-- 服务器版本： 5.7.24-log
+-- PHP Version: 5.6.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -91,9 +91,9 @@ CREATE TABLE `test` (
 CREATE TABLE `user` (
   `id` int(11) NOT NULL,
   `username` varchar(100) NOT NULL,
-  `address` varchar(100) NOT NULL,
+  `address` varchar(100) DEFAULT NULL,
   `device_id` varchar(20) NOT NULL,
-  `device_phone` varchar(20) NOT NULL,
+  `device_phone` varchar(20) DEFAULT NULL,
   `usertype_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -116,31 +116,36 @@ CREATE TABLE `usertype` (
 -- Indexes for table `deviceselfcheck`
 --
 ALTER TABLE `deviceselfcheck`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`);
 
 --
 -- Indexes for table `event`
 --
 ALTER TABLE `event`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`);
 
 --
 -- Indexes for table `repair`
 --
 ALTER TABLE `repair`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`);
 
 --
 -- Indexes for table `test`
 --
 ALTER TABLE `test`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`);
 
 --
 -- Indexes for table `user`
 --
 ALTER TABLE `user`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `usertype_id` (`usertype_id`);
 
 --
 -- Indexes for table `usertype`
@@ -181,7 +186,41 @@ ALTER TABLE `user`
 -- 使用表AUTO_INCREMENT `usertype`
 --
 ALTER TABLE `usertype`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+--
+-- 限制导出的表
+--
+
+--
+-- 限制表 `deviceselfcheck`
+--
+ALTER TABLE `deviceselfcheck`
+  ADD CONSTRAINT `deviceselfcheck_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
+
+--
+-- 限制表 `event`
+--
+ALTER TABLE `event`
+  ADD CONSTRAINT `event_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
+
+--
+-- 限制表 `repair`
+--
+ALTER TABLE `repair`
+  ADD CONSTRAINT `repair_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
+
+--
+-- 限制表 `test`
+--
+ALTER TABLE `test`
+  ADD CONSTRAINT `test_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
+
+--
+-- 限制表 `user`
+--
+ALTER TABLE `user`
+  ADD CONSTRAINT `user_ibfk_1` FOREIGN KEY (`usertype_id`) REFERENCES `usertype` (`id`);
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

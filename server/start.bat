@@ -1,3 +1,3 @@
-cd /d "D:\workspace\bws\server"
-npm run stopall
-npm start
+cd /d "D:\bws\server"
+npm run restart
+pause
