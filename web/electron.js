@@ -1,18 +1,17 @@
 const electron = require('electron');
 const child_process = require('child_process');
 const path = require('path');
+const execa = require('execa');
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 let mainWindow = null;
-
 app.on('window-all-closed', () => {
     if (process.platform !== 'win32') app.quit();
 });
 
 app.on('ready', () => {
-    const server_path = path.resolve(__dirname+'/../server');
     new Promise((resolve, reject) => {
-        child_process.exec("cd "+server_path+" && npm run restart");
+        runExec();
         setTimeout(resolve, 3000, 'Hello World!');
     }).then(()=>{
         mainWindow = new BrowserWindow();
@@ -26,4 +25,14 @@ app.on('ready', () => {
             mainWindow = null;
         });
     });
-})
+});
+
+function runExec(){
+    const batpath = path.join(__dirname, "start.bat");
+    execa(batpath);
+    //execa("D:\\workspace\\bws\\web\\start.bat");
+    //child_process.exec("cd /d D:\workspace\bws\server && npm run restart");
+    //child_process.spawn('cmd.exe',['/c D:\workspace\bws\web\start.bat']);
+    //child_process.spawn("cd /d D:\workspace\bws\server && mkdir test && npm run restart");
+    //child_process.exec('cmd.exe', '/c "cd /d D:\workspace\bws\server && mkdir test && npm run restart"')
+}
