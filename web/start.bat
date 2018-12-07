@@ -1,3 +1,2 @@
-cd /d "D:\workspace\bws\server"
+cd $1
 npm run restart
-pause

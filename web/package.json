@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --config webpack.config.js",
     "electron": "electron .",
-    "packager": "electron-packager . bws --platform=win32 --electron-version=3.0.10  --overwrite --asar.unpack=start.bat --out=release-builds",
+    "packager": "electron-packager . bws --platform=darwin --electron-version=3.0.10  --overwrite --asar.unpack=start.bat --out=release-builds",
     "packager-help": "electron-packager"
   },
   "keywords": [],
@@ -36,6 +36,7 @@
   "dependencies": {
     "antd": "3.8.0",
     "execa": "^1.0.0",
+    "fix-path": "^2.1.0",
     "lodash": "4.17.10",
     "moment": "^2.22.2",
     "react": "^15.6.2",

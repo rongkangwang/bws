@@ -2,6 +2,7 @@ const electron = require('electron');
 const child_process = require('child_process');
 const path = require('path');
 const execa = require('execa');
+const fixPath = require('fix-path');
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 let mainWindow = null;
@@ -28,9 +29,23 @@ app.on('ready', () => {
 });
 
 function runExec(){
-    const batpath = path.join(__dirname, "start.bat");
-    execa(batpath);
-    //execa("D:\\workspace\\bws\\web\\start.bat");
+    //mac
+    fixPath();
+    const batpath = path.join(__dirname, '..', 'app.asar.unpacked', "start.bat");
+    // execa.shell(batpath);
+    //uppackdir
+    //const serverpath = path.join(__dirname, '..', 'app.asar.unpacked', "server");
+    //local
+    const serverpath = path.join(__dirname, '..', '..','..','..','..','..','..', "server");
+    execa.shell(batpath + " " + serverpath);
+
+    //windows
+    // const batpath = path.join(__dirname, '..', 'app.asar.unpacked', "start.bat");
+    // const serverpath = path.join(__dirname, '..', 'app.asar.unpacked', "server");
+    // execa(batpath + " " + serverpath);
+
+
+    //execa("D:\\workspace\\bws\\web\\start.bat");  works for windows
     //child_process.exec("cd /d D:\workspace\bws\server && npm run restart");
     //child_process.spawn('cmd.exe',['/c D:\workspace\bws\web\start.bat']);
     //child_process.spawn("cd /d D:\workspace\bws\server && mkdir test && npm run restart");
