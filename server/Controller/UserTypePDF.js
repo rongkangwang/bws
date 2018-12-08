@@ -14,6 +14,7 @@ connection.connect();
 exports.generatepdf = function(req, res) {
     let filename = "";
     const {usertype_id, date} = req.query;
+    filename = usertype_id+" "+date+".pdf";
     const doc = new PDFDocument({layout:"landscape"});
     const stream = doc.pipe(fs.createWriteStream(path.join(__dirname,'..','file','Aim.pdf')));
 
@@ -39,7 +40,6 @@ exports.generatepdf = function(req, res) {
             console.log(error);
             res.send(error);
         } else {
-            filename = results[0]["type"]+" "+date+".pdf";
             doc.font("fonts/songti.ttf").fontSize(20).text(results[0]["type"]+"报警信息月统计表", {align:"center"});
             doc.moveDown();
             doc.font("fonts/songti.ttf").fontSize(10).text("统计月份："+date, {align:"right"});
@@ -1031,7 +1031,7 @@ exports.generatepdf = function(req, res) {
 
     stream.on('finish', function () {
         res.type('application/pdf');
-        res.setHeader('Content-disposition', 'attachment; filename=' + filename);
+        res.setHeader('Content-disposition', 'attachment;filename=' + filename);
         res.sendFile(path.join(__dirname,'..','file','Aim.pdf'));
     });
 

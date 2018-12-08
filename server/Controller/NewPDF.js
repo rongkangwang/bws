@@ -40,7 +40,7 @@ exports.generatepdf = function(req, res) {
             console.log(error);
             res.send(error);
         } else {
-            filename = results[0]["username"]+" "+date+".pdf";
+            filename = results[0]["device_id"]+" "+date+".pdf";
             doc.font("fonts/songti.ttf").fontSize(20).text(results[0]["username"]+"报警信息月统计表", {align:"center"});
             doc.moveDown();
             doc.font("fonts/songti.ttf").fontSize(10).text("统计月份："+date, {align:"right"});
