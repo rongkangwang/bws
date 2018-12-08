@@ -16,7 +16,7 @@ exports.generatepdf = function(req, res) {
     const {user_id, date} = req.query;
 
     const doc = new PDFDocument();
-    const stream = doc.pipe(fs.createWriteStream(__dirname+'/../file/Aim.pdf'));
+    const stream = doc.pipe(fs.createWriteStream(path.join(__dirname,'..','file','Aim.pdf')));
 
     const page_width = doc.page.width;
     const page_height = doc.page.height;
@@ -339,7 +339,7 @@ exports.generatepdf = function(req, res) {
 
     stream.on('finish', function () {
         res.type('application/pdf');
-        res.sendFile(path.resolve(__dirname+'/../file/Aim.pdf'));
+        res.sendFile(path.join(__dirname,'..','file','Aim.pdf'));
     });
 
 };
