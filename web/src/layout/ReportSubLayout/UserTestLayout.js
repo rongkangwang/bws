@@ -222,6 +222,7 @@ class UserTestLayout extends React.Component {
                                                                                         autoFocus={true}
                                                                                         onChange={this.userFilterOnChange}
                                                                                         onSelect={this.filterOnChange}
+                                                                                        filterOption={(inputValue, option) => option.props.children.toLowerCase().indexOf(inputValue.toLowerCase()) >= 0}
                                                                                         dataSource={lodash.uniq(lodash.map(this.state.origindatasource, function (o) {
                                                                                             return o.username + "-" + o.device_id;
                                                                                         }))}><Search

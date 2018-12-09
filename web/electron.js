@@ -40,6 +40,17 @@ app.on('ready', () => {
         });
     });
 
+    // mainWindow = new BrowserWindow();
+    // mainWindow.maximize();
+    //
+    // mainWindow.loadURL(`file://${__dirname}/index.html`);
+    //
+    // //mainWindow.webContents.openDevTools();
+    //
+    // mainWindow.on('closed', () => {
+    //     mainWindow = null;
+    // });
+
     // new Promise((resolve, reject) => {
     //     runExec();
     //     setTimeout(resolve, 3000, 'Hello World!');
