@@ -11,7 +11,7 @@ import {
     Modal,
     Form,
     Popconfirm,
-    DatePicker, AutoComplete
+    DatePicker, AutoComplete, Pagination
 } from 'antd'
 import axios from 'axios'
 
@@ -43,7 +43,9 @@ class ReportDetailsLayout extends React.Component {
             detectordropdownvisible: false,
             userdropdownvisible: false,
             lastdetectorfiltervalue: null,
-            lastuserfiltervalue: null
+            lastuserfiltervalue: null,
+            currentpage:1,
+            totalnum:0
         };
     }
 
@@ -53,9 +55,9 @@ class ReportDetailsLayout extends React.Component {
 
     getEvents = () => {
         this.setState({loading: true});
-        axios.get(SERVER + '/events').then(res => {
+        axios.get(SERVER + '/events',{params:{page: 1}}).then(res => {
             if (res.status === 200) {
-                this.setState({origindatasource: res.data, datasource: res.data, loading: false});
+                this.setState({origindatasource: res.data, datasource: res.data, loading: false, totalnum: res.data[0].totalnum});
             } else {
                 this.setState({loading: false});
             }
@@ -194,7 +196,20 @@ class ReportDetailsLayout extends React.Component {
     userFilterOnChange = (value) => {
         this.setState({userfiltervalue: value});
     }
-
+    pageChange = (page) =>{
+        this.setState({loading: true});
+        axios.get(SERVER + '/events',{params:{page: page}}).then(res => {
+            if (res.status === 200) {
+                this.setState({origindatasource: res.data, datasource: res.data, loading: false, currentpage: page});
+            } else {
+                this.setState({loading: false});
+            }
+        }).catch((error) => {
+            console.log(error);
+            message.error('Get events of page '+page+' error!');
+            this.setState({loading: false});
+        });
+    }
     render() {
         const formItemLayout = {
             labelCol: {
@@ -275,7 +290,7 @@ class ReportDetailsLayout extends React.Component {
                 <Content style={{background: '#fff', minHeight: 280}}>
                     <Button style={{marginBottom: '5px'}} onClick={this.showModal}>添加报警事件</Button>
                     <Table size="small" columns={columns} loading={this.state.loading}
-                           dataSource={this.state.datasource}/>
+                           dataSource={this.state.datasource} pagination={{total:this.state.totalnum, current:this.state.currentpage, onChange:this.pageChange}}/>
                 </Content>
                 <Modal
                     title={this.state.modalstatus === "add" ? "添加报警事件" : "更新报警事件"}

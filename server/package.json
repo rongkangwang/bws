@@ -7,7 +7,8 @@
     "start": "forever start app.js",
     "stop": "forever stop app.js",
     "stopall": "forever stopall",
-    "restart": "forever stopall & forever start app.js"
+    "restart": "forever stopall & forever start app.js",
+    "normalstart": "node app.js"
   },
   "dependencies": {
     "body-parser": "^1.18.3",

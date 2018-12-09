@@ -130,15 +130,30 @@ exports.updateUser = function(req, res) {
     }
 };
 exports.getEvents = function(req, res) {
-    connection.query("select event.*, user.username, user.device_id from event join user on user.id=event.user_id order by datetime desc",function (error, results) {
-        if (error) {
-            console.log(error);
-            res.send(error);
-        } else {
-            console.log(results);
-            res.send(results);
-        }
-    });
+    const page = parseInt(req.query.page);
+    if(page===1) {
+        connection.query("select (select count(1) from event) as totalnum ,event.*, user.username, user.device_id from event join user on user.id=event.user_id order by datetime desc limit " + (page - 1) * 10 + ",10", function (error, results) {
+            if (error) {
+                console.log(error);
+                res.send(error);
+            } else {
+                console.log("wang");
+                console.log(results);
+                res.send(results);
+            }
+        });
+    } else {
+        connection.query("select event.*, user.username, user.device_id from event join user on user.id=event.user_id order by datetime desc limit " + (page - 1) * 10 + ",10", function (error, results) {
+            if (error) {
+                console.log(error);
+                res.send(error);
+            } else {
+                console.log("wang");
+                console.log(results);
+                res.send(results);
+            }
+        });
+    }
 };
 exports.addEvent = function(req, res) {
     const event = req.body;
