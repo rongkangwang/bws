@@ -25,7 +25,7 @@ app.on('ready', () => {
 
     runExec().then(()=>{
         new Promise((resolve, reject) => {
-            setTimeout(resolve, 1000, 'Hello World!');  //delay 1 min
+            setTimeout(resolve, 2000, 'Hello World!');  //delay 1 min
         }).then(()=>{
             mainWindow = new BrowserWindow();
             mainWindow.maximize();
