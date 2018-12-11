@@ -36,7 +36,7 @@ export default class ReportLayout extends React.Component {
             usertype_id: undefined,
             usertypedisabled: false,
             userdisabled:false,
-            tabtitle: "报警事件详情(报警设备每天向报警中心发送的报警事件)"
+            tabtitle: "报警事件详情"
         }
     }
     componentDidMount() {
@@ -111,13 +111,13 @@ export default class ReportLayout extends React.Component {
     }
     tabOnChange = (activeKey) => {
         if(activeKey === "1"){
-            this.setState({tabtitle:"报警事件详情(报警设备每天向报警中心发送的报警事件)"});
+            this.setState({tabtitle:"报警事件详情"});
         }else if(activeKey === "2"){
-            this.setState({tabtitle:"报警设备自检异常情况(报警设备每天定时向报警中心发送的系统信息)"});
+            this.setState({tabtitle:"报警设备自检异常情况"});
         }else if(activeKey === "3"){
-            this.setState({tabtitle:"报警系统维修情况(用户主动报修、报警中心报修)"});
+            this.setState({tabtitle:"报警系统维修情况"});
         }else{
-            this.setState({tabtitle:"用户测试(用户定期与报警中心测试报警系统)"});
+            this.setState({tabtitle:"用户测试"});
         }
     }
     render() {
@@ -148,10 +148,10 @@ export default class ReportLayout extends React.Component {
                             </div>
                         </Row>
                         <Row><Tabs defaultActiveKey="1" onChange={this.tabOnChange}>
-                            <TabPane tab={<div style={{textAlign:"center"}}>报警事件详情<br/><span style={{fontSize:10}}>(报警设备每天向报警中心发送的报警事件)</span></div>} key="1"><ReportDetailsLayout users={this.state.users}/></TabPane>
-                            <TabPane tab={<div style={{textAlign:"center"}}>报警设备自检异常情况<br/><span style={{fontSize:10}}>(报警设备每天定时向报警中心发送的系统信息)</span></div>} key="2"><ReportDeviceLayout users={this.state.users}/></TabPane>
-                            <TabPane tab={<div style={{textAlign:"center"}}>报警系统维修情况<br/><span style={{fontSize:10}}>(用户主动报修、报警中心报修)</span></div>} key="3"><RepairStatusLayout users={this.state.users}/></TabPane>
-                            <TabPane tab={<div style={{textAlign:"center"}}>用户测试<br/><span style={{fontSize:10}}>(用户定期与报警中心测试报警系统)</span></div>} key="4"><UserTestLayout users={this.state.users}/></TabPane>
+                            <TabPane tab="报警事件详情" key="1"><ReportDetailsLayout users={this.state.users}/></TabPane>
+                            <TabPane tab="报警设备自检异常情况" key="2"><ReportDeviceLayout users={this.state.users}/></TabPane>
+                            <TabPane tab="报警系统维修情况" key="3"><RepairStatusLayout users={this.state.users}/></TabPane>
+                            <TabPane tab="用户测试" key="4"><UserTestLayout users={this.state.users}/></TabPane>
                         </Tabs></Row>
                     </Card>
             </Layout>
