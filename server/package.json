@@ -7,25 +7,19 @@
     "start": "forever start app.js",
     "stop": "forever stop app.js",
     "stopall": "forever stopall",
-    "restart": "forever stopall & forever start app.js",
-    "pkg": "pkg -t win forever-start.js"
+    "restart": "forever stopall & forever start app.js"
   },
   "dependencies": {
     "body-parser": "^1.18.3",
     "connect-timeout": "^1.9.0",
     "express": "^4.16.3",
-    "file-system": "^2.2.2",
-    "forever-monitor": "^1.7.1",
+    "forever": "^0.15.3",
     "moment": "^2.22.2",
     "mysql": "^2.16.0",
-    "pdfkit": "^0.8.3",
-    "pkg": "^4.3.5"
+    "pdfkit": "^0.8.3"
   },
   "devDependencies": {
     "compression": "^1.7.3",
-    "cors": "^2.8.4",
-    "forever": "^0.15.3",
-    "lodash": "^4.17.10",
-    "request": "^2.87.0"
+    "cors": "^2.8.4"
   }
 }
