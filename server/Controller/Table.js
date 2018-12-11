@@ -1,7 +1,3 @@
-const request = require('request');
-const lodash = require('lodash')
-const file_system = require('file-system')
-const fs = require('fs')
 const mysql = require('mysql');
 const connection = mysql.createConnection({
     host     : 'localhost',

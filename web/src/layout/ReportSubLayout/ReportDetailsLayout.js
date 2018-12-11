@@ -246,6 +246,7 @@ class ReportDetailsLayout extends React.Component {
                                                                                         autoFocus={true}
                                                                                         onChange={this.userFilterOnChange}
                                                                                         onSelect={this.filterOnChange}
+                                                                                        filterOption={(inputValue, option) => option.props.children.toLowerCase().indexOf(inputValue.toLowerCase()) >= 0}
                                                                                         dataSource={lodash.uniq(lodash.map(this.state.origindatasource, function (o) {
                                                                                             return o.username + "-" + o.device_id;
                                                                                         }))}><Search
@@ -319,6 +320,8 @@ class ReportDetailsLayout extends React.Component {
                                     <Option value="震动">震动</Option>
                                     <Option value="玻璃破碎">玻璃破碎</Option>
                                     <Option value="门磁">门磁</Option>
+                                    <Option value="烟感">烟感</Option>
+                                    <Option value="红外对射">红外对射</Option>
                                     <Option value="其他">其他</Option>
                                 </Select>
                             )}

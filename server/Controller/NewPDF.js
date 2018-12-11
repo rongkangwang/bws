@@ -58,7 +58,7 @@ exports.generatepdf = function(req, res) {
             doc.font("fonts/songti.ttf").fontSize(font_size).text(results[0]["device_id"], line_start_x+table_width*0.8+font_width_start, line_start_y+font_height_start, {width:table_width*0.2});
             doc.font("fonts/songti.ttf").fontSize(font_size).text(results[0]["device_phone"], line_start_x+table_width*0.8+font_width_start, line_start_y+font_height_start+line_height, {width:table_width*0.2});
             doc.rect(line_start_x,line_start_y+line_height*2,table_width,line_height).stroke();
-            doc.font("fonts/songtibold.ttf").fontSize(11).text("报警事件详情", line_start_x+font_width_start, line_start_y+font_height_start+line_height*2);
+            doc.font("fonts/songti.ttf").fontSize(11).text("报警事件详情(报警设备每天向报警中心发送的报警事件)", line_start_x+font_width_start, line_start_y+font_height_start+line_height*2);
             current_line_num = 3;
             current_height = line_start_y+line_height*3;
             //event details
@@ -214,7 +214,7 @@ exports.generatepdf = function(req, res) {
                         current_height = new_page_start_y;
                         current_line_num = 0;
                         doc.rect(line_start_x,current_height,table_width,line_height).stroke();
-                        doc.font("fonts/songtibold.ttf").fontSize(11).text("报警设备自检异常情况", line_start_x+font_width_start, current_height+font_height_start);
+                        doc.font("fonts/songti.ttf").fontSize(11).text("报警设备自检异常情况(报警设备每天定时向报警中心发送的系统信息)", line_start_x+font_width_start, current_height+font_height_start);
                         current_height = current_height+line_height;
                         current_line_num++;
                     }else if(current_page_num > 0&&current_line_num >= other_page_limit){
@@ -223,12 +223,12 @@ exports.generatepdf = function(req, res) {
                         current_height = new_page_start_y;
                         current_line_num = 0;
                         doc.rect(line_start_x,current_height,table_width,line_height).stroke();
-                        doc.font("fonts/songtibold.ttf").fontSize(11).text("报警设备自检异常情况", line_start_x+font_width_start, current_height+font_height_start);
+                        doc.font("fonts/songti.ttf").fontSize(11).text("报警设备自检异常情况(报警设备每天定时向报警中心发送的系统信息)", line_start_x+font_width_start, current_height+font_height_start);
                         current_height = current_height+line_height;
                         current_line_num++;
                     }else{
                         doc.rect(line_start_x,current_height,table_width,line_height).stroke();
-                        doc.font("fonts/songtibold.ttf").fontSize(11).text("报警设备自检异常情况", line_start_x+font_width_start, current_height+font_height_start);
+                        doc.font("fonts/songti.ttf").fontSize(11).text("报警设备自检异常情况(报警设备每天定时向报警中心发送的系统信息)", line_start_x+font_width_start, current_height+font_height_start);
                         current_height = current_height+line_height;
                         current_line_num++;
                     }
@@ -352,7 +352,7 @@ exports.generatepdf = function(req, res) {
                                 current_height = new_page_start_y;
                                 current_line_num = 0;
                                 doc.rect(line_start_x,current_height,table_width,line_height).stroke();
-                                doc.font("fonts/songtibold.ttf").fontSize(11).text("报警系统维修情况", line_start_x+font_width_start, current_height+font_height_start);
+                                doc.font("fonts/songti.ttf").fontSize(11).text("报警系统维修情况(用户主动报修、报警中心报修)", line_start_x+font_width_start, current_height+font_height_start);
                                 current_height = current_height+line_height;
                                 current_line_num++;
                             }else if(current_page_num > 0&&current_line_num >= other_page_limit){
@@ -361,12 +361,12 @@ exports.generatepdf = function(req, res) {
                                 current_height = new_page_start_y;
                                 current_line_num = 0;
                                 doc.rect(line_start_x,current_height,table_width,line_height).stroke();
-                                doc.font("fonts/songtibold.ttf").fontSize(11).text("报警系统维修情况", line_start_x+font_width_start, current_height+font_height_start);
+                                doc.font("fonts/songti.ttf").fontSize(11).text("报警系统维修情况(用户主动报修、报警中心报修)", line_start_x+font_width_start, current_height+font_height_start);
                                 current_height = current_height+line_height;
                                 current_line_num++;
                             }else{
                                 doc.rect(line_start_x,current_height,table_width,line_height).stroke();
-                                doc.font("fonts/songtibold.ttf").fontSize(11).text("报警系统维修情况", line_start_x+font_width_start, current_height+font_height_start);
+                                doc.font("fonts/songti.ttf").fontSize(11).text("报警系统维修情况(用户主动报修、报警中心报修)", line_start_x+font_width_start, current_height+font_height_start);
                                 current_height = current_height+line_height;
                                 current_line_num++;
                             }
@@ -612,7 +612,7 @@ exports.generatepdf = function(req, res) {
                                         current_height = new_page_start_y;
                                         current_line_num = 0;
                                         doc.rect(line_start_x,current_height,table_width,line_height).stroke();
-                                        doc.font("fonts/songtibold.ttf").fontSize(11).text("用户测试", line_start_x+font_width_start, current_height+font_height_start);
+                                        doc.font("fonts/songti.ttf").fontSize(11).text("用户测试(用户定期与报警中心测试报警系统)", line_start_x+font_width_start, current_height+font_height_start);
                                         current_height = current_height+line_height;
                                         current_line_num++;
                                     }else if(current_page_num > 0&&current_line_num >= other_page_limit){
@@ -621,12 +621,12 @@ exports.generatepdf = function(req, res) {
                                         current_height = new_page_start_y;
                                         current_line_num = 0;
                                         doc.rect(line_start_x,current_height,table_width,line_height).stroke();
-                                        doc.font("fonts/songtibold.ttf").fontSize(11).text("用户测试", line_start_x+font_width_start, current_height+font_height_start);
+                                        doc.font("fonts/songti.ttf").fontSize(11).text("用户测试(用户定期与报警中心测试报警系统)", line_start_x+font_width_start, current_height+font_height_start);
                                         current_height = current_height+line_height;
                                         current_line_num++;
                                     }else{
                                         doc.rect(line_start_x,current_height,table_width,line_height).stroke();
-                                        doc.font("fonts/songtibold.ttf").fontSize(11).text("用户测试", line_start_x+font_width_start, current_height+font_height_start);
+                                        doc.font("fonts/songti.ttf").fontSize(11).text("用户测试(用户定期与报警中心测试报警系统)", line_start_x+font_width_start, current_height+font_height_start);
                                         current_height = current_height+line_height;
                                         current_line_num++;
                                     }

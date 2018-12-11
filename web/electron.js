@@ -25,7 +25,7 @@ app.on('ready', () => {
 
     runExec().then(()=>{
         new Promise((resolve, reject) => {
-            setTimeout(resolve, 1000, 'Hello World!');  //delay 1 min
+            setTimeout(resolve, 2000, 'Hello World!');  //delay 1 min
         }).then(()=>{
             mainWindow = new BrowserWindow();
             mainWindow.maximize();
@@ -39,6 +39,17 @@ app.on('ready', () => {
             });
         });
     });
+
+    // mainWindow = new BrowserWindow();
+    // mainWindow.maximize();
+    //
+    // mainWindow.loadURL(`file://${__dirname}/index.html`);
+    //
+    // //mainWindow.webContents.openDevTools();
+    //
+    // mainWindow.on('closed', () => {
+    //     mainWindow = null;
+    // });
 
     // new Promise((resolve, reject) => {
     //     runExec();
