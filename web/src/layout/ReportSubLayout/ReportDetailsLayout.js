@@ -100,10 +100,14 @@ class ReportDetailsLayout extends React.Component {
                 } else if (this.state.modalstatus === "update") {
                     const updateset = {};
                     const {updateevent} = this.state;
-                    for (let key in updateevent) {
-                        if (updateevent[key] !== values[key]) {
+                    for(let key in updateevent){
+                        if(key!=="id" && key!=="username" && key!=="device_id" && updateevent[key]!==values[key]){
                             updateset[key] = values[key];
                         }
+                    }
+                    if(Object.keys(updateset).length===0){
+                        message.error("没有要更新的数据！");
+                        return;
                     }
                     axios.post(SERVER + '/event/' + updateevent.id, updateset).then(res => {
                         if (res.status === 200) {

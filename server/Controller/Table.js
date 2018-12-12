@@ -1,13 +1,10 @@
-const mysql = require('mysql');
-const connection = mysql.createConnection({
-    host     : 'localhost',
-    user     : 'root',
-    password : 'root',
-    database : 'bws'
-});
-connection.connect();
+const sqlite3 = require('sqlite3').verbose();
+const path = require('path');
+
+const db = new sqlite3.Database(path.join(__dirname,"..","sqlite","bws-sqlite.db"));
+db.run("pragma journal_mode = WAL");
 exports.getUserTypes = function(req, res) {
-    connection.query("select * from usertype",function (error, results) {
+    db.all("select * from usertype",function (error, results) {
         if (error) {
             console.log(error);
             res.send(error);
@@ -19,7 +16,8 @@ exports.getUserTypes = function(req, res) {
 };
 exports.addUserType = function(req, res) {
     const usertype = req.body;
-    connection.query('INSERT INTO usertype SET ?',usertype,function (error, results) {
+    const insertString = "null,'"+usertype.type+"'";
+    db.run('INSERT INTO usertype values ('+insertString+')',function (error, results) {
         if (error) {
             console.log(error);
             res.send(error);
@@ -31,7 +29,7 @@ exports.addUserType = function(req, res) {
 };
 exports.removeUserType = function(req, res) {
     const {id} = req.params;
-    connection.query('DELETE FROM usertype WHERE id = '+id,function (error, results) {
+    db.run('DELETE FROM usertype WHERE id = '+id,function (error, results) {
         if (error) {
             console.log(error);
             res.send(error);
@@ -42,7 +40,7 @@ exports.removeUserType = function(req, res) {
     });
 };
 exports.getUsers = function(req, res) {
-    connection.query("select * from user",function (error, results) {
+    db.all("select * from user",function (error, results) {
         if (error) {
             console.log(error);
             res.send(error);
@@ -54,7 +52,8 @@ exports.getUsers = function(req, res) {
 };
 exports.addUser = function(req, res) {
     const user = req.body;
-    connection.query('select * from user where device_id="'+user.device_id+'"', function (error, results, fields) {
+    const insertString = "null,'"+user.username+"',"+(user.address===undefined?null:"'"+user.address+"'")+",'"+user.device_id+"',"+(user.device_phone===undefined?null:"'"+user.device_phone+"'")+","+user.usertype_id;
+    db.all('select * from user where device_id="'+user.device_id+'"', function (error, results, fields) {
         if (error) {
             console.log(error);
             res.send(error);
@@ -63,7 +62,7 @@ exports.addUser = function(req, res) {
             if(results.length>0){
                 res.send({errno:11111, sqlMessage:"设备号冲突！"});
             }else{
-                connection.query('INSERT INTO user SET ?', user, function (error, results, fields) {
+                db.run('INSERT INTO user values ('+insertString+')', function (error, results, fields) {
                     if (error) {
                         console.log(error);
                         res.send(error);
@@ -78,7 +77,7 @@ exports.addUser = function(req, res) {
 };
 exports.removeUser = function(req, res) {
     const {id} = req.params;
-    connection.query('DELETE FROM user WHERE id = '+id, function (error, results, fields) {
+    db.run('DELETE FROM user WHERE id = '+id, function (error, results, fields) {
         if (error) {
             console.log(error);
             res.send(error);
@@ -92,7 +91,7 @@ exports.updateUser = function(req, res) {
     const updateset = req.body;
     const {id} = req.params;
     if("device_id" in updateset){
-        connection.query('select * from user where device_id="'+updateset.device_id+'"', function (error, results, fields) {
+        db.all('select * from user where device_id="'+updateset.device_id+'"', function (error, results, fields) {
             if (error) {
                 console.log(error);
                 res.send(error);
@@ -101,7 +100,14 @@ exports.updateUser = function(req, res) {
                 if(results.length>0){
                     res.send({errno:11111, sqlMessage:"设备号冲突！"});
                 }else{
-                    connection.query('Update user set ? WHERE id = ' + id, updateset, function (error, results, fields) {
+                    let updateString = '';
+                    for(let key in updateset){
+                        if(updateset[key]!==undefined){
+                            updateString += (updateset[key]===undefined?'':key+'="'+updateset[key]+'",');
+                        }
+                    }
+                    updateString = updateString.substr(0,updateString.length-1);
+                    db.run('Update user set '+updateString+' WHERE id = ' + id, function (error, results, fields) {
                         if (error) {
                             console.log(error);
                             res.send(error);
@@ -114,7 +120,14 @@ exports.updateUser = function(req, res) {
             }
         });
     }else {
-        connection.query('Update user set ? WHERE id = ' + id, updateset, function (error, results, fields) {
+        let updateString = '';
+        for(let key in updateset){
+            if(updateset[key]!==undefined){
+                updateString += (updateset[key]===undefined?'':key+'="'+updateset[key]+'",');
+            }
+        }
+        updateString = updateString.substr(0,updateString.length-1);
+        db.run('Update user set '+updateString+' WHERE id=' + id, function (error, results, fields) {
             if (error) {
                 console.log(error);
                 res.send(error);
@@ -126,7 +139,7 @@ exports.updateUser = function(req, res) {
     }
 };
 exports.getEvents = function(req, res) {
-    connection.query("select event.*, user.username, user.device_id from event join user on user.id=event.user_id order by datetime desc",function (error, results) {
+    db.all("select event.*, user.username, user.device_id from event join user on user.id=event.user_id order by datetime desc",function (error, results) {
         if (error) {
             console.log(error);
             res.send(error);
@@ -138,7 +151,8 @@ exports.getEvents = function(req, res) {
 };
 exports.addEvent = function(req, res) {
     const event = req.body;
-    connection.query('INSERT INTO event SET ?', event, function (error, results, fields) {
+    const insertString = "null,'"+event.datetime+"','"+event.detector_type+"','"+event.position+"',"+(event.solution===undefined?null:"'"+event.solution+"'")+","+event.user_id;
+    db.run('INSERT INTO event values ('+insertString+')', function (error, results, fields) {
         if (error) {
             console.log(error);
             res.send(error);
@@ -152,7 +166,7 @@ exports.removeEvent = function(req, res) {
     console.log("wang");
     const {eventid} = req.params;
     console.log(eventid);
-    connection.query('DELETE FROM event WHERE id = '+eventid, function (error, results, fields) {
+    db.run('DELETE FROM event WHERE id = '+eventid, function (error, results, fields) {
         if (error) {
             console.log("error");
             console.log(error);
@@ -166,7 +180,14 @@ exports.removeEvent = function(req, res) {
 exports.updateEvent = function(req, res) {
     const updateset = req.body;
     const {eventid} = req.params;
-    connection.query('Update event set ? WHERE id = '+eventid, updateset,function (error, results, fields) {
+    let updateString = '';
+    for(let key in updateset){
+        if(updateset[key]!==undefined){
+            updateString += (updateset[key]===undefined?'':key+'="'+updateset[key]+'",');
+        }
+    }
+    updateString = updateString.substr(0,updateString.length-1);
+    db.run('Update event set '+updateString+' WHERE id = '+eventid,function (error, results, fields) {
         if (error) {
             console.log(error);
             res.send(error);
@@ -177,7 +198,7 @@ exports.updateEvent = function(req, res) {
     });
 };
 exports.getDevices = function(req, res) {
-    connection.query("select deviceselfcheck.*, user.username, user.device_id from deviceselfcheck join user on user.id=deviceselfcheck.user_id order by date desc",function (error, results) {
+    db.all("select deviceselfcheck.*, user.username, user.device_id from deviceselfcheck join user on user.id=deviceselfcheck.user_id order by date desc",function (error, results) {
         if (error) {
             console.log(error);
             res.send(error);
@@ -189,7 +210,8 @@ exports.getDevices = function(req, res) {
 };
 exports.addDevice = function(req, res) {
     const deviceselfcheck = req.body;
-    connection.query('INSERT INTO deviceselfcheck SET ?', deviceselfcheck, function (error, results, fields) {
+    const insertString = "null,'"+deviceselfcheck.date+"','"+deviceselfcheck.status+"',"+(deviceselfcheck.solution===undefined?null:"'"+deviceselfcheck.solution+"'")+","+deviceselfcheck.user_id;
+    db.run('INSERT INTO deviceselfcheck values ('+insertString+')', function (error, results, fields) {
         if (error) {
             console.log(error);
             res.send(error);
@@ -201,7 +223,7 @@ exports.addDevice = function(req, res) {
 };
 exports.removeDevice = function(req, res) {
     const {deviceselfcheckid} = req.params;
-    connection.query('DELETE FROM deviceselfcheck WHERE id = "'+deviceselfcheckid+'"', function (error, results, fields) {
+    db.run('DELETE FROM deviceselfcheck WHERE id = "'+deviceselfcheckid+'"', function (error, results, fields) {
         if (error) {
             console.log(error);
             res.send(error);
@@ -214,7 +236,14 @@ exports.removeDevice = function(req, res) {
 exports.updateDevice = function(req, res) {
     const updateset = req.body;
     const {deviceselfcheckid} = req.params;
-    connection.query('Update deviceselfcheck set ? WHERE id = '+deviceselfcheckid, updateset,function (error, results, fields) {
+    let updateString = '';
+    for(let key in updateset){
+        if(updateset[key]!==undefined){
+            updateString += (updateset[key]===undefined?'':key+'="'+updateset[key]+'",');
+        }
+    }
+    updateString = updateString.substr(0,updateString.length-1);
+    db.run('Update deviceselfcheck set '+updateString+' WHERE id = '+deviceselfcheckid,function (error, results, fields) {
         if (error) {
             console.log(error);
             res.send(error);
@@ -225,7 +254,7 @@ exports.updateDevice = function(req, res) {
     });
 };
 exports.getRepairs = function(req, res) {
-    connection.query("select repair.*, user.username, user.device_id from repair join user on user.id=repair.user_id order by date desc",function (error, results) {
+    db.all("select repair.*, user.username, user.device_id from repair join user on user.id=repair.user_id order by date desc",function (error, results) {
         if (error) {
             console.log(error);
             res.send(error);
@@ -237,7 +266,8 @@ exports.getRepairs = function(req, res) {
 };
 exports.addRepair = function(req, res) {
     const repair = req.body;
-    connection.query('INSERT INTO repair SET ?', repair, function (error, results, fields) {
+    const insertString = "null,'"+repair.date+"','"+repair.status+"','"+repair.content+"','"+repair.material+"','"+repair.staff+"',"+repair.user_id;
+    db.run('INSERT INTO repair values ('+insertString+')', function (error, results, fields) {
         if (error) {
             console.log(error);
             res.send(error);
@@ -249,7 +279,7 @@ exports.addRepair = function(req, res) {
 };
 exports.removeRepair = function(req, res) {
     const {repairid} = req.params;
-    connection.query('DELETE FROM repair WHERE id = "'+repairid+'"', function (error, results, fields) {
+    db.run('DELETE FROM repair WHERE id = "'+repairid+'"', function (error, results, fields) {
         if (error) {
             console.log(error);
             res.send(error);
@@ -262,7 +292,14 @@ exports.removeRepair = function(req, res) {
 exports.updateRepair = function(req, res) {
     const updateset = req.body;
     const {repairid} = req.params;
-    connection.query('Update repair set ? WHERE id = '+repairid, updateset,function (error, results, fields) {
+    let updateString = '';
+    for(let key in updateset){
+        if(updateset[key]!==undefined){
+            updateString += (updateset[key]===undefined?'':key+'="'+updateset[key]+'",');
+        }
+    }
+    updateString = updateString.substr(0,updateString.length-1);
+    db.run('Update repair set '+updateString+' WHERE id = '+repairid,function (error, results, fields) {
         if (error) {
             console.log(error);
             res.send(error);
@@ -273,7 +310,7 @@ exports.updateRepair = function(req, res) {
     });
 };
 exports.getTests = function(req, res) {
-    connection.query("select test.*, user.username, user.device_id from test join user on user.id=test.user_id order by datetime desc",function (error, results) {
+    db.all("select test.*, user.username, user.device_id from test join user on user.id=test.user_id order by datetime desc",function (error, results) {
         if (error) {
             console.log(error);
             res.send(error);
@@ -285,7 +322,8 @@ exports.getTests = function(req, res) {
 };
 exports.addTest = function(req, res) {
     const test = req.body;
-    connection.query('INSERT INTO test SET ?', test, function (error, results, fields) {
+    const insertString = "null,'"+test.datetime+"','"+test.test_type+"','"+test.sector+"','"+test.position+"',"+test.report_num+",'"+test.phone_number+"',"+test.user_id;
+    db.run('INSERT INTO test values ('+insertString+')', function (error, results, fields) {
         if (error) {
             console.log(error);
             res.send(error);
@@ -297,7 +335,7 @@ exports.addTest = function(req, res) {
 };
 exports.removeTest = function(req, res) {
     const {testid} = req.params;
-    connection.query('DELETE FROM test WHERE id = "'+testid+'"', function (error, results, fields) {
+    db.run('DELETE FROM test WHERE id = "'+testid+'"', function (error, results, fields) {
         if (error) {
             console.log(error);
             res.send(error);
@@ -310,7 +348,14 @@ exports.removeTest = function(req, res) {
 exports.updateTest = function(req, res) {
     const updateset = req.body;
     const {testid} = req.params;
-    connection.query('Update test set ? WHERE id = '+testid, updateset,function (error, results, fields) {
+    let updateString = '';
+    for(let key in updateset){
+        if(updateset[key]!==undefined){
+            updateString += (updateset[key]===undefined?'':key+'="'+updateset[key]+'",');
+        }
+    }
+    updateString = updateString.substr(0,updateString.length-1);
+    db.run('Update test set '+updateString+' WHERE id = '+testid,function (error, results, fields) {
         if (error) {
             console.log(error);
             res.send(error);

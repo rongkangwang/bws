@@ -1,15 +1,11 @@
 const PDFDocument = require('pdfkit')
 const fs = require('fs')
 const path = require('path');
-const mysql = require('mysql');
-const moment = require('moment')
-const connection = mysql.createConnection({
-    host     : 'localhost',
-    user     : 'root',
-    password : 'root',
-    database : 'bws'
-});
-connection.connect();
+const moment = require('moment');
+const sqlite3 = require('sqlite3').verbose();
+
+const connection = new sqlite3.Database(path.join(__dirname,"..","sqlite","bws-sqlite.db"));
+connection.run("pragma journal_mode = WAL");
 
 exports.generatepdf = function(req, res) {
     const {user_id, date} = req.query;
@@ -35,7 +31,7 @@ exports.generatepdf = function(req, res) {
     let new_page_start_y = 70;
 
 
-    connection.query("select * from user where id="+user_id,function (error, results) {
+    connection.all("select * from user where id="+user_id,function (error, results) {
         if (error) {
             console.log(error);
             res.send(error);
@@ -64,7 +60,7 @@ exports.generatepdf = function(req, res) {
             //event details
             const start_datetime = date+"-01 00:00:00";
             const end_datetime = getNextMonth(date)+"-01 00:00:00";
-            connection.query("select * from event where datetime>='"+start_datetime+"' and datetime<'"+end_datetime+"' and user_id="+user_id, function (error, results) {
+            connection.all("select * from event where datetime>='"+start_datetime+"' and datetime<'"+end_datetime+"' and user_id="+user_id, function (error, results) {
                 if(error){
                     console.log(error);
                     res.send(error);
@@ -232,7 +228,7 @@ exports.generatepdf = function(req, res) {
                         current_height = current_height+line_height;
                         current_line_num++;
                     }
-                    connection.query("select * from deviceselfcheck where date>='"+start_datetime+"' and date<'"+end_datetime+"' and user_id="+user_id, function (error, results) {
+                    connection.all("select * from deviceselfcheck where date>='"+start_datetime+"' and date<'"+end_datetime+"' and user_id="+user_id, function (error, results) {
                         if(error){
                             console.log(error);
                             res.send(error);
@@ -371,7 +367,7 @@ exports.generatepdf = function(req, res) {
                                 current_line_num++;
                             }
 
-                            connection.query("select * from repair where date>='"+start_datetime+"' and date<'"+end_datetime+"' and user_id="+user_id, function (error, results) {
+                            connection.all("select * from repair where date>='"+start_datetime+"' and date<'"+end_datetime+"' and user_id="+user_id, function (error, results) {
                                 if (error) {
                                     console.log(error);
                                     res.send(error);
@@ -630,7 +626,7 @@ exports.generatepdf = function(req, res) {
                                         current_height = current_height+line_height;
                                         current_line_num++;
                                     }
-                                    connection.query("select * from test where datetime>='"+start_datetime+"' and datetime<'"+end_datetime+"' and user_id="+user_id, function (error, results) {
+                                    connection.all("select * from test where datetime>='"+start_datetime+"' and datetime<'"+end_datetime+"' and user_id="+user_id, function (error, results) {
                                         if (error) {
                                             console.log(error);
                                             res.send(error);

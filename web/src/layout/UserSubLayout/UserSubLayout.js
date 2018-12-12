@@ -93,9 +93,13 @@ class UserSubLayout extends React.Component{
                     const updateset = {};
                     const {updateuser} = this.state;
                     for(let key in updateuser){
-                        if(updateuser[key]!==values[key]){
+                        if(key!=="id" && updateuser[key]!==values[key]){
                             updateset[key] = values[key];
                         }
+                    }
+                    if(Object.keys(updateset).length===0){
+                        message.error("没有要更新的数据！");
+                        return;
                     }
                     axios.post(SERVER + '/user/'+updateuser.id, updateset).then(res => {
                         if (res.status === 200) {

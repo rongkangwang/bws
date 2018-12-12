@@ -98,10 +98,14 @@ class UserTestLayout extends React.Component {
                 } else if (this.state.modalstatus === "update") {
                     const updateset = {};
                     const {updatetest} = this.state;
-                    for (let key in updatetest) {
-                        if (updatetest[key] !== values[key]) {
+                    for(let key in updatetest){
+                        if(key!=="id" && key!=="username" && key!=="device_id" && updatetest[key]!==values[key]){
                             updateset[key] = values[key];
                         }
+                    }
+                    if(Object.keys(updateset).length===0){
+                        message.error("没有要更新的数据！");
+                        return;
                     }
                     axios.post(SERVER + '/test/' + updatetest.id, updateset).then(res => {
                         if (res.status === 200) {

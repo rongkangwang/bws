@@ -99,10 +99,14 @@ class RepairStatusLayout extends React.Component {
                 } else if (this.state.modalstatus === "update") {
                     const updateset = {};
                     const {updaterepair} = this.state;
-                    for (let key in updaterepair) {
-                        if (updaterepair[key] !== values[key]) {
+                    for(let key in updaterepair){
+                        if(key!=="id" && key!=="username" && key!=="device_id" && updaterepair[key]!==values[key]){
                             updateset[key] = values[key];
                         }
+                    }
+                    if(Object.keys(updateset).length===0){
+                        message.error("没有要更新的数据！");
+                        return;
                     }
                     axios.post(SERVER + '/repair/' + updaterepair.id, updateset).then(res => {
                         if (res.status === 200) {

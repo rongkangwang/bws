@@ -1,15 +1,11 @@
 const PDFDocument = require('pdfkit')
 const fs = require('fs')
 const path = require('path');
-const mysql = require('mysql');
-const moment = require('moment')
-const connection = mysql.createConnection({
-    host     : 'localhost',
-    user     : 'root',
-    password : 'root',
-    database : 'bws'
-});
-connection.connect();
+const moment = require('moment');
+const sqlite3 = require('sqlite3').verbose();
+
+const connection = new sqlite3.Database(path.join(__dirname,"..","sqlite","bws-sqlite.db"));
+connection.run("pragma journal_mode = WAL");
 
 exports.generatepdf = function(req, res) {
     console.log(req.query);
@@ -32,7 +28,7 @@ exports.generatepdf = function(req, res) {
     let repair_line_num = 0;
     let test_line_num = 0;
 
-    connection.query("select * from user where id="+user_id,function (error, results) {
+    connection.all("select * from user where id="+user_id,function (error, results) {
         if (error) {
             console.log(error);
             res.send(error);
@@ -58,7 +54,7 @@ exports.generatepdf = function(req, res) {
             //event details
             const start_datetime = date+"-01 00:00:00";
             const end_datetime = getNextMonth(date)+"-01 00:00:00";
-            connection.query("select * from event where datetime>='"+start_datetime+"' and datetime<'"+end_datetime+"' and user_id="+user_id, function (error, results) {
+            connection.all("select * from event where datetime>='"+start_datetime+"' and datetime<'"+end_datetime+"' and user_id="+user_id, function (error, results) {
                 if(error){
                     console.log(error);
                     res.send(error);
@@ -107,7 +103,7 @@ exports.generatepdf = function(req, res) {
                     doc.rect(line_start_x,line_start_y+line_height*(3+event_line_num),table_width,line_height).stroke();
                     doc.font("fonts/songtibold.ttf").fontSize(11).text("报警设备自检异常情况", line_start_x+font_width_start, line_start_y+font_height_start+line_height*(3+event_line_num));
                     const device_start_line = 3+event_line_num+1;
-                    connection.query("select * from deviceselfcheck where date>='"+start_datetime+"' and date<'"+end_datetime+"' and user_id="+user_id, function (error, results) {
+                    connection.all("select * from deviceselfcheck where date>='"+start_datetime+"' and date<'"+end_datetime+"' and user_id="+user_id, function (error, results) {
                         if(error){
                             console.log(error);
                             res.send(error);
@@ -147,7 +143,7 @@ exports.generatepdf = function(req, res) {
                             doc.font("fonts/songtibold.ttf").fontSize(11).text("报警系统维修情况", line_start_x+font_width_start, line_start_y+font_height_start+line_height*(3+event_line_num+1+device_line_num));
                             const repair_start_line = 3+event_line_num+1+device_line_num+1;
 
-                            connection.query("select * from repair where date>='"+start_datetime+"' and date<'"+end_datetime+"' and user_id="+user_id, function (error, results) {
+                            connection.all("select * from repair where date>='"+start_datetime+"' and date<'"+end_datetime+"' and user_id="+user_id, function (error, results) {
                                 if (error) {
                                     console.log(error);
                                     res.send(error);
@@ -226,7 +222,7 @@ exports.generatepdf = function(req, res) {
                                     doc.rect(line_start_x, line_start_y + line_height * (3 + event_line_num + 1 + device_line_num+1+repair_line_num), table_width, line_height).stroke();
                                     doc.font("fonts/songtibold.ttf").fontSize(11).text("用户测试", line_start_x + font_width_start, line_start_y + font_height_start + line_height * (3 + event_line_num + 1 + device_line_num+1+repair_line_num));
                                     const test_start_line = 3 + event_line_num + 1 + device_line_num + 1+repair_line_num+1;
-                                    connection.query("select * from test where datetime>='"+start_datetime+"' and datetime<'"+end_datetime+"' and user_id="+user_id, function (error, results) {
+                                    connection.all("select * from test where datetime>='"+start_datetime+"' and datetime<'"+end_datetime+"' and user_id="+user_id, function (error, results) {
                                         if (error) {
                                             console.log(error);
                                             res.send(error);
